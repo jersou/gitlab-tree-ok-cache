@@ -3,7 +3,7 @@
 # change here to generate new git tree SHA
 echo RANDOM_VALUE=mxhvqFU3qUWfAHhpZlYmnDZyTAObd1va
 
-is_ok=false
+is_ok=true
 
 if [ $is_ok = true ]
 then
