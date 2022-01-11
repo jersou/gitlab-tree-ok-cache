@@ -1,5 +1,5 @@
 
-image: alpine
+image: jersou/alpine-git
 
 .check-ci-history:
   stage: test
@@ -8,7 +8,6 @@ image: alpine
     exit_codes:
       - 222
   before_script:
-    - apk --update add git # FIXME: use docker image with git & sh
     # skip the job if not manual and if the SHA-1 of the "$TREE_TO_CHECK" tree is in history
     - |
       [ "$CI_JOB_MANUAL" = true ] \
