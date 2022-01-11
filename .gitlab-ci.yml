@@ -1,0 +1,49 @@
+
+.test-template:
+  stage: test
+  cache:
+    key: "$CI_PROJECT_NAMESPACE__$CI_PROJECT_NAME__${CI_JOB_NAME}__ci_ok_cache"
+    policy: pull-push
+    untracked: true
+    paths:
+      - .ci_ok_cache_*
+  image: alpine
+  before_script:
+    - apk --update add git # FIXME: use docker image with  git & sh
+    # if in history, exit 222, else exit 0
+    - '! sh/check_tree_SHA_of_paths_ok.sh $PATH_TO_CHECK || exit 222'
+  # allow the 222 exit code : allow failure if tree is found in history
+  allow_failure:
+    exit_codes:
+      - 222
+
+SERVICE-A:
+  extends: .test-template
+  variables:
+    PATH_TO_CHECK: SERVICE-A/ LIB-1/ LIB-2/
+  script:
+    - service-A/test.sh
+
+SERVICE-B:
+  extends: .test-template
+  variables:
+    PATH_TO_CHECK: SERVICE-B/ LIB-2/
+  script:
+    - service-B/test.sh
+
+SERVICE-C:
+  extends: .test-template
+  variables:
+    PATH_TO_CHECK: SERVICE-C/
+  script:
+    - service-C/test.sh
+
+show-caches:
+  extends: .test-template
+  before_script:
+    - cat .ci_ok_cache_*
+
+clear-caches:
+  extends: .test-template
+  before_script:
+    - rm .ci_ok_cache_*
