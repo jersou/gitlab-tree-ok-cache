@@ -10,8 +10,8 @@ by the job has already succeeded in the past.
 ### Proposal
 
 An option in `.gtlab-ci.yml` file "idempotent_tree" (name to be determined)
-with an array of path could be used to a history of state of these "trees"
-that have passed the job with success.
+with an array of paths could be used to make a history of state that have
+passed the job with success:
 
 ```
 service-A:
