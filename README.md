@@ -1,5 +1,1 @@
-POC of : 
-
-skip pipeline execution if a pipeline has already succeeded.
-
-This applies to a part of the file tree
+POC of : skip job execution if the file tree used in the job has already succeeded in the past.
