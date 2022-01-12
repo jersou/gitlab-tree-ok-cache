@@ -83,6 +83,8 @@ perhaps a link could be made to the artifact of the job that was found in the hi
 And if the artifacts are outdated, then the current job is finally executed to produce
 a new artifact (possibly activated/deactivated by an option).
 
+Or the job could be skipped like the "only:changes" option.
+
 ### Links / references
 
 [jersou / Gitlab Tree Ok Cache · GitLab](https://gitlab.com/jersou/gitlab-tree-ok-cache)
