@@ -1,5 +1,7 @@
 # Add "skip if sub tree is ok in the past" job option, useful in monorepos ~= Idempotent job
 
+https://gitlab.com/gitlab-org/gitlab/-/issues/350212
+
 ### Problem to solve
 
 On monorepo projects (especially), the jobs are run all the time, even
