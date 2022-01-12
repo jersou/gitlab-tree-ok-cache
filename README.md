@@ -59,7 +59,7 @@ The command `git ls-tree HEAD -- $TREE_TO_CHECK` outputs :
 Then, the command `git ls-tree HEAD -- $TREE_TO_CHECK | tr / \| | git mktree`
 outputs the SHA-1 of `$TREE_TO_CHECK` : `70552b00d642bfa259b1622674e85844d8711ad6`
 
-This SHA-1 searched in the `.ci_ok_history` file, if it is found, the script stops
+This SHA-1 is searched in the `.ci_ok_history` file, if it is found, the script stops
 with the code 222 (allowed), otherwise the job script continues.
 
 If the job is successful, the SHA-1 is added to the `.ci_ok_history` file. This file is cached:
