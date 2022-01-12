@@ -1,4 +1,3 @@
-
 image: jersou/alpine-git
 
 .check-ci-history:
@@ -27,20 +26,20 @@ image: jersou/alpine-git
 SERVICE-A:
   extends: .check-ci-history
   variables:
-    TREE_TO_CHECK: SERVICE-A/ LIB-1/ LIB-2/ .gitlab-ci.yml
+    TREE_TO_CHECK: service-A/ LIB-1/ LIB-2/ .gitlab-ci.yml
   script:
     - service-A/test.sh
 
 SERVICE-B:
   extends: .check-ci-history
   variables:
-    TREE_TO_CHECK: SERVICE-B/ LIB-2/ .gitlab-ci.yml
+    TREE_TO_CHECK: service-B/ LIB-2/ .gitlab-ci.yml
   script:
     - service-B/test.sh
 
 SERVICE-C:
   extends: .check-ci-history
   variables:
-    TREE_TO_CHECK: SERVICE-C/ .gitlab-ci.yml
+    TREE_TO_CHECK: service-C/ .gitlab-ci.yml
   script:
     - service-C/test.sh
