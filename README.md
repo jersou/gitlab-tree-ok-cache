@@ -1,4 +1,4 @@
-# Add "sub tree is ok in the past" job option, useful in monorepos ~= Idempotent job
+# Add "skip if sub tree is ok in the past" job option, useful in monorepos ~= Idempotent job
 
 ### Problem to solve
 
