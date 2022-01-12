@@ -1,12 +1,17 @@
-# Add Tree ok in past job option, usefull in monorepos ~= Idempotent job
+# Add Tree ok in past job option, useful in monorepos ~= Idempotent job
 
 ### Problem to solve
 
-On monorepo projects (especially), the jobs are run all the time, even if their state has already been successfully run previously. Time and resources could be saved by checking that the version of the files used by the job has already succeeded in the past.
+On monorepo projects (especially), the jobs are run all the time, even
+if their state has already been successfully run previously. Time and
+resources could be saved by checking that the version of the files used
+by the job has already succeeded in the past.
 
 ### Proposal
 
-An option in .gtlab-ci.yml file "idempotent_tree" (name to be determined) with an array of path could be used to an history of state of these "trees" that have passed the job with success.
+An option in `.gtlab-ci.yml` file "idempotent_tree" (name to be determined)
+with an array of path could be used to a history of state of these "trees"
+that have passed the job with success.
 
 ```
 service-A:
@@ -19,7 +24,9 @@ service-A:
     - service-A/test.sh
 ```
 
-A POC of this idea is operational here [jersou / Gitlab Tree Ok Cache](https://gitlab.com/jersou/gitlab-tree-ok-cache) , it use gitlab cache and git ls-tree & git mktree to genreate the SHA-1 of the "state" :
+A POC of this idea is operational here
+[jersou / Gitlab Tree Ok Cache](https://gitlab.com/jersou/gitlab-tree-ok-cache),
+it uses gitlab cache and `git ls-tree` & `git mktree` to generate the SHA-1 of the "state" :
 
 ```yaml
   # allow the 222 exit code : allow failure if tree is found in history
@@ -49,9 +56,11 @@ The command `git ls-tree HEAD -- $TREE_TO_CHECK` outputs :
 100755 blob 4586c34e690276e3a848ae72ad231325dd184355	service-A/test.sh
 ```
 
-Then, the command `git ls-tree HEAD -- $TREE_TO_CHECK | tr / \| | git mktree ` outputs the SHA-1 of `$TREE_TO_CHECK` : `70552b00d642bfa259b1622674e85844d8711ad6`
+Then, the command `git ls-tree HEAD -- $TREE_TO_CHECK | tr / \| | git mktree`
+outputs the SHA-1 of `$TREE_TO_CHECK` : `70552b00d642bfa259b1622674e85844d8711ad6`
 
-This SHA-1 searched in the `.ci_ok_history` file, if it is found, the script stops with the code 222 (allowed), otherwise the job script continues.
+This SHA-1 searched in the `.ci_ok_history` file, if it is found, the script stops
+with the code 222 (allowed), otherwise the job script continues.
 
 If the job is successful, the SHA-1 is added to the `.ci_ok_history` file. This file is cached:
 
@@ -64,11 +73,15 @@ If the job is successful, the SHA-1 is added to the `.ci_ok_history` file. This 
       - .ci_ok_history
 ```
 
-This POC work fine, but need git in the docker image, and it would be much more graceful if it was integrated in gitlab of course.
+This POC work fine, but need git in the docker image, and it would be much more
+graceful if it was integrated in gitlab of course.
 
 ### Further details
 
-If this idea is implemented in gitlab, the problem of artifacts should be addressed, perhaps a link could be made to the artifact of the job that was found in the history. And if the artifacts are outdated, then the current job is finally executed to produce a new artifact (possibly activated/deactivated by an option).
+If this idea is implemented in gitlab, the problem of artifacts should be addressed,
+perhaps a link could be made to the artifact of the job that was found in the history.
+And if the artifacts are outdated, then the current job is finally executed to produce
+a new artifact (possibly activated/deactivated by an option).
 
 ### Links / references
 
