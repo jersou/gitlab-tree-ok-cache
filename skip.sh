@@ -2,11 +2,11 @@
 # This script get last 1000 successful job of the projet, filter by the job name,
 #  and for each, check if the SKIP_IF_TREE_OK_IN_PAST file state is the same as the current state.
 # If true, then the find job artifacts are download and unzip. The script exit 0.
-# The file /tmp/ci-skip keep the result of this process.
+# The file $ci_skip_path keep the result of this process.
 #
 # ⚠️ Requirement :
 #   - the variable SKIP_IF_TREE_OK_IN_PAST must contains the paths used by the job
-#   - docker images/gitlab runner need : bash, curl, git, unzip, fx
+#   - docker images/gitlab runner need : bash, curl, git, unzip, fx # TODO limit dep to NodeJS(+unzip) : refactor bash→Node
 #   - if the nested jobs of current uses the dependencies key with current, the dependencies files need to be in an artifact
 #   - CI variable changes are not detected
 #   - need API_READ_TOKEN (personal access tokens that have read_api scope)
@@ -19,8 +19,9 @@ if [[ "$API_READ_TOKEN" = "" ]]; then
   echo -e "\e[1;41;39m    ⚠️ The API_READ_TOKEN variable is empty !    \e[0m"
   exit 2
 fi
-if test -f /tmp/ci-skip; then
-  [[ "$(cat /tmp/ci-skip)" = "true" ]] && exit 0
+ci_skip_path="/tmp/ci-skip-${CI_PROJECT_ID}-${CI_PROJECT_ID}"
+if test -f $ci_skip_path; then
+  [[ "$(cat $ci_skip_path)" = "true" ]] && exit 0
   exit 3
 fi
 
@@ -38,15 +39,15 @@ curl --silent --fail "$CI_API_V4_URL/projects/${CI_PROJECT_ID}/jobs?scope=succes
         rm artifact.zip
       fi
       echo -e "\e[1;43;30m    ✅ $current_tree_sha tree found in job $web_url   \e[0m"
-      echo true >/tmp/ci-skip
+      echo true >$ci_skip_path
       break
     fi
   done
 
-if test -f /tmp/ci-skip; then
+if test -f $ci_skip_path; then
   exit 0
 else
   echo -e "\e[1;43;30m    ❌ tree not found in last 1000 success jobs of the project    \e[0m"
-  echo false >/tmp/ci-skip
+  echo false >$ci_skip_path
   exit 4
 fi
