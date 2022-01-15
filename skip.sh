@@ -27,20 +27,19 @@ fi
 current_tree_sha=$(git ls-tree HEAD -- $SKIP_IF_TREE_OK_IN_PAST | tr / \| | git mktree)
 
 curl --silent --fail "$CI_API_V4_URL/projects/${CI_PROJECT_ID}/jobs?scope=success&per_page=1000&page=&private_token=${API_READ_TOKEN}" |
-  fx ".filter(job => job.name === '$CI_JOB_NAME').map(j => [j.commit.id, j.web_url, j.artifacts_expire_at].join(' ')).join('\n')" |
-  while read commit  web_url  artifacts_expire_at ; do
+  fx ".filter(job => job.name === '$CI_JOB_NAME').map(j => [j.commit.id, j.web_url, j.id, j.artifacts_expire_at].join(' ')).join('\n')" |
+  while read commit  web_url job artifacts_expire_at ; do
     tree_sha=$(git ls-tree $commit -- $SKIP_IF_TREE_OK_IN_PAST | tr / \| | git mktree)
     if [[ "$tree_sha" = "$current_tree_sha" ]]; then
-      if [[ "$artifacts_expire_at" != "" ]]; then
         echo  "artifacts_expire_at: $artifacts_expire_at"
-        curl -o artifact.zip "$web_url/artifacts/download" || break
+      if [[ "$artifacts_expire_at" != "" ]]; then
+        curl -o artifact.zip --location "$CI_API_V4_URL/projects/${CI_PROJECT_ID}/jobs/$job/artifacts?job_token=$CI_JOB_TOKEN" || break
         unzip artifact.zip
         rm artifact.zip
-        ls -al
       fi
       echo -e "\e[1;43;30m    ✅ $current_tree_sha tree found in job $web_url   \e[0m"
       echo true >/tmp/ci-skip
-     # break
+      break
     fi
   done
 
