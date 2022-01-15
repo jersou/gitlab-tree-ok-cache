@@ -1,32 +1,36 @@
-image: jersou/alpine-bash-curl-fx-git-nodejs
-
-.check-ci-history:
-  stage: test
-  # allow the 222 exit code : allow failure if tree is found in history
-  allow_failure:
-    exit_codes:
-      - 222
-  before_script:
-    # skip the job if the SHA-1 of the "$TREE_TO_CHECK" tree is in the history
-    - "! ./check-ok-in-past.sh $TREE_TO_CHECK || exit 222"
+image: jersou/alpine-bash-curl-fx-git-nodejs-unzip
 
 SERVICE-A:
-  extends: .check-ci-history
+  stage: test
   variables:
-    TREE_TO_CHECK: service-A LIB-1 LIB-2 # .gitlab-ci.yml
+    SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1 LIB-2 # .gitlab-ci.yml
   script:
-    - service-A/test.sh
+    - ./skip.sh || service-A/test.sh
+    - ./skip.sh || service-A/test.sh
+    - ./skip.sh || service-A/test.sh
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - result.txt
 
 SERVICE-B:
-  extends: .check-ci-history
+  stage: test
   variables:
-    TREE_TO_CHECK: service-B LIB-2 # .gitlab-ci.yml
+    SKIP_IF_TREE_OK_IN_PAST: service-B LIB-2 # .gitlab-ci.yml
   script:
-    - service-B/test.sh
+    - ./skip.sh || service-B/test.sh
+    - ./skip.sh || service-B/test.sh
+    - ./skip.sh || service-B/test.sh
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - result.txt
 
 SERVICE-C:
-  extends: .check-ci-history
+  stage: test
   variables:
-    TREE_TO_CHECK: service-C # .gitlab-ci.yml
+    SKIP_IF_TREE_OK_IN_PAST: service-C # .gitlab-ci.yml
   script:
-    - service-C/test.sh
+    - ./skip.sh || service-C/test.sh
+    - ./skip.sh || service-C/test.sh
+    - ./skip.sh || service-C/test.sh
