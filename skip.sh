@@ -17,6 +17,19 @@
 #   - CI variable changes are not detected
 #   - need API_READ_TOKEN (personal access tokens that have read_api scope)
 #   - set GIT_DEPTH variable to 1000 or more
+#
+# usage in .gitlab-ci.yml file :
+# SERVICE-A:
+#   stage: test
+#   image: jersou/alpine-bash-curl-fx-git-nodejs-unzip
+#   variables:
+#     GIT_DEPTH: 10000
+#     SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1 .gitlab-ci.yml skip.sh
+#   script:
+#     - ./skip.sh || service-A/test1.sh
+#     - ./skip.sh || service-A/test2.sh
+#     - ./skip.sh || service-A/test3.sh
+
 
 if [[ "$SKIP_IF_TREE_OK_IN_PAST" = "" ]]; then
   echo -e "\e[1;41;39m    ⚠️ The SKIP_IF_TREE_OK_IN_PAST variable is empty, set the list of paths to check    \e[0m"
