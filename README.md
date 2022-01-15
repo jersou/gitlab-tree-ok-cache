@@ -1,6 +1,8 @@
 # Add "skip if sub tree is ok in the past" job option, useful in monorepos ~= Idempotent job
 
-https://gitlab.com/gitlab-org/gitlab/-/issues/350212
+* GitLab issue : https://gitlab.com/gitlab-org/gitlab/-/issues/350212
+* API-query-version implementation in branch : https://gitlab.com/jersou/gitlab-tree-ok-cache/-/tree/API-query-version
+* working API version working implementation in branch : https://gitlab.com/jersou/gitlab-tree-ok-cache/-/tree/skip-version
 
 ### Problem to solve
 
