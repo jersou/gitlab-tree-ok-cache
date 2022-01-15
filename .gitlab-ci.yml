@@ -1,5 +1,8 @@
 image: jersou/alpine-bash-curl-fx-git-nodejs-unzip
 
+variables:
+  GIT_DEPTH: 10000
+
 SERVICE-A:
   stage: test
   variables:
