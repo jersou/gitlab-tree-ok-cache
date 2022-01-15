@@ -89,6 +89,19 @@ a new artifact (possibly activated/deactivated by an option).
 
 Or the job could be skipped like the "only:changes" option.
 
+
+#### Skip version implementation (see skip-version branch)
+
+1. Check if the process has already been completed : check file /tmp/ci-skip. If file found, exit, else :
+2. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST" of the current HEAD
+3. Get last 1000 successful jobs of the project
+4. Filter jobs : keep current job only
+5. For each job :
+   1. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST"
+   2. Check if this SHA-1 equals the current HEAD SHA-1 (see 2.)
+   3. If the SHA-1s are equals, write true in /tmp/ci-skip and exit with code 0
+6. If no job found, write false in /tmp/ci-skip and exit with code > 0
+
 ### Links / references
 
 [jersou / Gitlab Tree Ok Cache · GitLab](https://gitlab.com/jersou/gitlab-tree-ok-cache)

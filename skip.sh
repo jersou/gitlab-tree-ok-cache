@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
-# This script get last 1000 successful job of the projet, filter by the job name,
-#  and for each, check if the SKIP_IF_TREE_OK_IN_PAST file state is the same as the current state.
-# If true, then the find job artifacts are download and unzip. The script exit 0.
-# The file $ci_skip_path keep the result of this process.
+# Implementation summary :
+#  1. Check if the process has already been completed : check file /tmp/ci-skip. If file found, exit, else :
+#  2. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST" of the current HEAD
+#  3. Get last 1000 successful jobs of the project
+#  4. Filter jobs : keep current job only
+#  5. For each job :
+#     1. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST"
+#     2. Check if this SHA-1 equals the current HEAD SHA-1 (see 2.)
+#     3. If the SHA-1s are equals, write true in /tmp/ci-skip and exit with code 0
+#  6. If no job found, write false in /tmp/ci-skip and exit with code > 0
 #
-# ⚠️ Requirement :
+# ⚠️ Requirements :
 #   - the variable SKIP_IF_TREE_OK_IN_PAST must contains the paths used by the job
 #   - docker images/gitlab runner need : bash, curl, git, unzip, fx # TODO limit dep to NodeJS(+unzip) : refactor bash→Node
 #   - if the nested jobs of current uses the dependencies key with current, the dependencies files need to be in an artifact
 #   - CI variable changes are not detected
 #   - need API_READ_TOKEN (personal access tokens that have read_api scope)
 #   - set GIT_DEPTH variable to 1000 or more
+
 if [[ "$SKIP_IF_TREE_OK_IN_PAST" = "" ]]; then
   echo -e "\e[1;41;39m    ⚠️ The SKIP_IF_TREE_OK_IN_PAST variable is empty, set the list of paths to check    \e[0m"
   exit 1
