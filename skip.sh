@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# From https://gitlab.com/jersou/gitlab-tree-ok-cache/-/blob/skip-version/skip.sh
 # Implementation summary :
 #  1. Check if the process has already been completed : check file /tmp/ci-skip. If file found, exit, else :
 #  2. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST" of the current HEAD
