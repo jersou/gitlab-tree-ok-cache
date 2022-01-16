@@ -134,13 +134,15 @@ async function main() {
     (job) => job.name === process.env.CI_JOB_NAME
   );
   for (const job of okJobCommits) {
-    const tree = getTree(job.commit.id);
-    if (current_tree === tree) {
-      await extractArtifacts(job);
-      fs.writeFileSync(ci_skip_path, "true");
-      green(`✅ ${current_tree} tree found in job ${job.web_url}`);
-      process.exit(0);
-    }
+    try {
+      const tree = getTree(job.commit.id);
+      if (current_tree === tree) {
+        await extractArtifacts(job);
+        fs.writeFileSync(ci_skip_path, "true");
+        green(`✅ tree found in job ${job.web_url}`);
+        process.exit(0);
+      }
+    } catch (_) {}
   }
   fs.writeFileSync(ci_skip_path, "false");
   yellow("❌ tree not found in last 1000 success jobs of the project");

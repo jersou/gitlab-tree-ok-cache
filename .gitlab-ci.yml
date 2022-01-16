@@ -6,7 +6,7 @@ variables:
 SERVICE-A:
   stage: test
   variables:
-    SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1 LIB-2 .gitlab-ci.yml skip.js
+    SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1/test.sh LIB-2 .gitlab-ci.yml skip.js
   script:
     - ./skip.js || service-A/test.sh
     - ./skip.js || service-A/test.sh
