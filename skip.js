@@ -2,13 +2,13 @@
 // From https://gitlab.com/jersou/gitlab-tree-ok-cache/-/blob/skip-version/skip.js
 // Implementation summary :
 //     1. Check if the check has already been completed : check /tmp/ci-skip. If file exists, exit, else :
-//     2. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST" of the current HEAD
+//     2. Get the "git ls-tree" of the tree "$SKIP_IF_TREE_OK_IN_PAST" of the current HEAD
 //     3. Get last 1000 successful jobs of the project
 //     4. Filter jobs : keep current job only
 //     5. For each job :
-//         1. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST"
-//     2. Check if this SHA-1 equals the current HEAD SHA-1 (see 2.)
-//     3. If the SHA-1s are equals, write true in /tmp/ci-skip and exit with code 0
+//         1. Get the "git ls-tree" of the tree "$SKIP_IF_TREE_OK_IN_PAST"
+//     2. Check if this "git ls-tree" equals the current HEAD "git ls-tree" (see 2.)
+//     3. If the "git ls-tree" are equals, write true in /tmp/ci-skip and exit with code 0
 //     6. If no job found, write false in /tmp/ci-skip and exit with code > 0
 //
 // ⚠️ Requirements :
@@ -32,9 +32,10 @@
 //   - ./skip.js || service-A/test3.sh
 
 const fs = require("fs");
-const { spawn, execFile, execSync } = require("child_process");
+const { spawn, execFileSync } = require("child_process");
 const http = require("http");
 const https = require("https");
+const crypto = require("crypto");
 
 const color = (color, msg) => console.error(`\x1b[${color}m  ${msg}  \x1b[0m`);
 const red = (msg) => color("1;41;30", msg);
@@ -59,23 +60,12 @@ if (fs.existsSync(ci_skip_path)) {
 }
 
 function getTree(commit) {
-  return new Promise((resolve) => {
-    const ls_tree = spawn("git", [
-      "ls-tree",
-      commit,
-      "--",
-      process.env.SKIP_IF_TREE_OK_IN_PAST,
-    ]);
-    const mktree = execFile("git", ["mktree"], (_, stdout) =>
-      resolve(stdout.trim())
-    );
-    ls_tree.stdout.on("data", (data) =>
-      mktree.stdin.write(data.toString().replace(/\//g, "__"))
-    );
-    ls_tree.on("exit", () => mktree.stdin.end());
-    ls_tree.stderr.pipe(process.stderr);
-    mktree.stderr.pipe(process.stderr);
-  });
+  return execFileSync("git", [
+    "ls-tree",
+    commit,
+    "--",
+    ...process.env.SKIP_IF_TREE_OK_IN_PAST.split(" "),
+  ]).toString();
 }
 
 function fetchJson(url) {
@@ -135,7 +125,8 @@ async function extractArtifacts(job) {
 }
 
 async function main() {
-  const current_tree_sha = await getTree("HEAD");
+  const current_tree = getTree("HEAD");
+  console.log("current_tree:\n", current_tree);
   const projectJobs = await fetchJson(
     `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs?scope=success&per_page=1000&page=&private_token=${process.env.API_READ_TOKEN}`
   );
@@ -143,11 +134,11 @@ async function main() {
     (job) => job.name === process.env.CI_JOB_NAME
   );
   for (const job of okJobCommits) {
-    const tree = await getTree(job.commit.id);
-    if (current_tree_sha === tree) {
+    const tree = getTree(job.commit.id);
+    if (current_tree === tree) {
       await extractArtifacts(job);
       fs.writeFileSync(ci_skip_path, "true");
-      green(`✅ ${current_tree_sha} tree found in job ${job.web_url}`);
+      green(`✅ ${current_tree} tree found in job ${job.web_url}`);
       process.exit(0);
     }
   }
