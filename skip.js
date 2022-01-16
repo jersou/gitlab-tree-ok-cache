@@ -96,7 +96,6 @@ function downloadFile(path, url) {
       .get(url, (res) => {
         if (res.statusCode === 302 && res.headers.location) {
           const location = res.headers.location;
-          console.error(`Redirect to ${location}`);
           downloadFile(path, location).then(resolve);
         } else if (res.statusCode !== 200) {
           console.error(res);
@@ -126,7 +125,6 @@ async function extractArtifacts(job) {
         artifactsPath,
         `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs/${job.id}/artifacts?job_token=${process.env.CI_JOB_TOKEN}`
       );
-      console.log(fs.lstatSync(artifactsPath));
       console.log(`unzip artifacts.zip`);
       execFileSync("unzip", [artifactsPath]);
       fs.unlinkSync(artifactsPath);
@@ -141,7 +139,6 @@ async function extractArtifacts(job) {
 
 async function main() {
   const current_tree = getTree("HEAD");
-  //console.log(`current_tree:\n${current_tree}\n------------`);
   const projectJobs = await fetchJson(
     `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs?scope=success&per_page=1000&page=&private_token=${process.env.API_READ_TOKEN}`
   );
