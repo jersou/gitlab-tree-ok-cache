@@ -121,7 +121,8 @@ async function extractArtifacts(job) {
       console.log(`unzip artifacts.zip`);
       execSync("unzip", [artifactsPath]);
       fs.unlinkSync(artifactsPath);
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       red("artifacts not found, expired ? → Don't skip");
       fs.writeFileSync(ci_skip_path, "false");
       process.exit(5);
