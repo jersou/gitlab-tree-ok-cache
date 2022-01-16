@@ -6,7 +6,7 @@ variables:
 SERVICE-A:
   stage: test
   variables:
-    SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1 LIB-2 .gitlab-ci.yml skip.sh
+    SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1 LIB-2 .gitlab-ci.yml skip.js
   script:
     - ./skip.js || service-A/test.sh
     - ./skip.js || service-A/test.sh
@@ -19,7 +19,7 @@ SERVICE-A:
 SERVICE-B:
   stage: test
   variables:
-    SKIP_IF_TREE_OK_IN_PAST: service-B LIB-2 .gitlab-ci.yml skip.sh
+    SKIP_IF_TREE_OK_IN_PAST: service-B LIB-2 .gitlab-ci.yml skip.js
   script:
     - ./skip.js || service-B/test.sh
     - ./skip.js || service-B/test.sh
@@ -32,7 +32,7 @@ SERVICE-B:
 SERVICE-C:
   stage: test
   variables:
-    SKIP_IF_TREE_OK_IN_PAST: service-C .gitlab-ci.yml skip.sh
+    SKIP_IF_TREE_OK_IN_PAST: service-C .gitlab-ci.yml skip.js
   script:
     - ./skip.js || service-C/test.sh
     - ./skip.js || service-C/test.sh

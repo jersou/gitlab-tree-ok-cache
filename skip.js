@@ -108,6 +108,7 @@ function downloadFile(path, url) {
 }
 
 async function extractArtifacts(job) {
+  console.log(`artifacts_expire_at: ${job.artifacts_expire_at}`);
   if (job.artifacts_expire_at) {
     try {
       execSync("unzip", ["-h"]);
@@ -115,7 +116,6 @@ async function extractArtifacts(job) {
       red("unzip not found, skip artifacts dl/extract.");
       return;
     }
-    console.log(`artifacts_expire_at: ${job.artifacts_expire_at}`);
     try {
       const artifactsPath = "artifacts.zip";
       console.log(`download artifacts.zip`);
