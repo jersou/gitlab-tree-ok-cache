@@ -98,7 +98,7 @@ function downloadFile(path, url) {
 }
 
 async function extractArtifacts(job) {
-  console.log(`artifacts_expire_at: ${job.artifacts_expire_at}`);
+  console.log(`job ${job.id} artifacts_expire_at: ${job.artifacts_expire_at}`);
   if (job.artifacts_expire_at) {
     try {
       execFileSync("unzip", ["-h"]);
@@ -134,7 +134,6 @@ async function main() {
     (job) => job.name === process.env.CI_JOB_NAME
   );
   for (const job of okJobCommits) {
-    console.log(`check job ${job.id}`);
     try {
       const tree = getTree(job.commit.id);
       if (current_tree === tree) {
