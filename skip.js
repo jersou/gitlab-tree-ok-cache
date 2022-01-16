@@ -1,4 +1,4 @@
-#!/usr/bin/env nodejs
+#!/usr/bin/env node
 // From https://gitlab.com/jersou/gitlab-tree-ok-cache/-/blob/skip-version/skip.js
 // Implementation summary :
 //     1. Check if the check has already been completed : check /tmp/ci-skip. If file exists, exit, else :
