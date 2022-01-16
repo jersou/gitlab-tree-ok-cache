@@ -119,7 +119,7 @@ async function extractArtifacts(job) {
       );
       console.log(fs.lstatSync(artifactsPath));
       console.log(`unzip artifacts.zip`);
-      execSync("unzip", [artifactsPath]);
+      execFileSync("unzip", [artifactsPath]);
       fs.unlinkSync(artifactsPath);
     } catch (error) {
       console.error(error);
