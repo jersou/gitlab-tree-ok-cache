@@ -117,6 +117,7 @@ async function extractArtifacts(job) {
         artifactsPath,
         `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs/${job.id}/artifacts?job_token=${process.env.CI_JOB_TOKEN}`
       );
+      console.log(fs.lstatSync(artifactsPath));
       console.log(`unzip artifacts.zip`);
       execSync("unzip", [artifactsPath]);
       fs.unlinkSync(artifactsPath);
