@@ -94,8 +94,8 @@ function downloadFile(path, url) {
     let client = url.match(/^https/) ? https : http;
     client
       .get(url, (res) => {
-        if (res.statusCode === 302 && response.headers.location) {
-          const location = response.headers.location;
+        if (res.statusCode === 302 && res.headers.location) {
+          const location = res.headers.location;
           console.error(`Redirect to ${location}`);
           downloadFile(path, location).then(resolve);
         } else if (res.statusCode !== 200) {
