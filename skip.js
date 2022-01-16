@@ -134,6 +134,7 @@ async function main() {
     (job) => job.name === process.env.CI_JOB_NAME
   );
   for (const job of okJobCommits) {
+    console.log(`check job ${job.id}`);
     try {
       const tree = getTree(job.commit.id);
       if (current_tree === tree) {
