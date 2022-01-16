@@ -8,9 +8,9 @@ SERVICE-A:
   variables:
     SKIP_IF_TREE_OK_IN_PAST: service-A LIB-1 LIB-2 .gitlab-ci.yml skip.sh
   script:
-    - ./skip.sh || service-A/test.sh
-    - ./skip.sh || service-A/test.sh
-    - ./skip.sh || service-A/test.sh
+    - ./skip.js || service-A/test.sh
+    - ./skip.js || service-A/test.sh
+    - ./skip.js || service-A/test.sh
   artifacts:
     expire_in: 30 days
     paths:
@@ -21,9 +21,9 @@ SERVICE-B:
   variables:
     SKIP_IF_TREE_OK_IN_PAST: service-B LIB-2 .gitlab-ci.yml skip.sh
   script:
-    - ./skip.sh || service-B/test.sh
-    - ./skip.sh || service-B/test.sh
-    - ./skip.sh || service-B/test.sh
+    - ./skip.js || service-B/test.sh
+    - ./skip.js || service-B/test.sh
+    - ./skip.js || service-B/test.sh
   artifacts:
     expire_in: 30 days
     paths:
@@ -34,6 +34,6 @@ SERVICE-C:
   variables:
     SKIP_IF_TREE_OK_IN_PAST: service-C .gitlab-ci.yml skip.sh
   script:
-    - ./skip.sh || service-C/test.sh
-    - ./skip.sh || service-C/test.sh
-    - ./skip.sh || service-C/test.sh
+    - ./skip.js || service-C/test.sh
+    - ./skip.js || service-C/test.sh
+    - ./skip.js || service-C/test.sh

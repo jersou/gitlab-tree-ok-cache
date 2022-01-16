@@ -40,7 +40,7 @@ if [[ "$API_READ_TOKEN" = "" ]]; then
   echo -e "\e[1;41;39m    ⚠️ The API_READ_TOKEN variable is empty !    \e[0m"
   exit 2
 fi
-ci_skip_path="/tmp/ci-skip-${CI_PROJECT_ID}-${CI_PROJECT_ID}"
+ci_skip_path="/tmp/ci-skip-${CI_PROJECT_ID}-${CI_JOB_ID}"
 if test -f $ci_skip_path; then
   [[ "$(cat $ci_skip_path)" = "true" ]] && exit 0
   exit 3
