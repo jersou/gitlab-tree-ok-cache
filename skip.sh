@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # From https://gitlab.com/jersou/gitlab-tree-ok-cache/-/blob/skip-version/skip.sh
 # Implementation summary :
-#  1. Check if the process has already been completed : check file /tmp/ci-skip. If file found, exit, else :
+#  1. Check if the check has already been completed : check /tmp/ci-skip. If file exists, exit, else :
 #  2. Get the SHA-1 of the tree "$SKIP_IF_TREE_OK_IN_PAST" of the current HEAD
 #  3. Get last 1000 successful jobs of the project
 #  4. Filter jobs : keep current job only
@@ -12,10 +12,10 @@
 #  6. If no job found, write false in /tmp/ci-skip and exit with code > 0
 #
 # ⚠️ Requirements :
-#   - the variable SKIP_IF_TREE_OK_IN_PAST must contains the paths used by the job
+#   - the variable SKIP_IF_TREE_OK_IN_PAST must contain the paths used by the job
 #   - docker images/gitlab runner need : bash, curl, git, unzip, fx # TODO limit dep to NodeJS(+unzip) : refactor bash→Node
 #   - if the nested jobs of current uses the dependencies key with current, the dependencies files need to be in an artifact
-#   - CI variable changes are not detected
+#   - CI variables changes are not detected
 #   - need API_READ_TOKEN (personal access tokens that have read_api scope)
 #   - set GIT_DEPTH variable to 1000 or more
 #
