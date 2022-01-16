@@ -120,7 +120,7 @@ async function extractArtifact(job) {
       const artifactPath = "artifact.zip";
       await downloadFile(
         artifactPath,
-        `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs/$job/artifacts?job_token=${process.env.CI_JOB_TOKEN}`
+        `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs/${job.id}/artifacts?job_token=${process.env.CI_JOB_TOKEN}`
       );
       execSync("unzip", [artifactPath]);
       fs.unlinkSync(artifactPath);
