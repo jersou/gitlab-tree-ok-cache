@@ -60,12 +60,16 @@ if (fs.existsSync(ci_skip_path)) {
 }
 
 function getTree(commit) {
-  return execFileSync("git", [
-    "ls-tree",
-    commit,
-    "--",
-    ...process.env.SKIP_IF_TREE_OK_IN_PAST.split(" "),
-  ]).toString();
+  return execFileSync(
+    "git",
+    [
+      "ls-tree",
+      commit,
+      "--",
+      ...process.env.SKIP_IF_TREE_OK_IN_PAST.split(" "),
+    ],
+    { stdio: ["pipe", "pipe", null] }
+  ).toString();
 }
 
 function fetchJson(url) {
