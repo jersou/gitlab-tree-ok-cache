@@ -101,7 +101,7 @@ async function extractArtifacts(job) {
   console.log(`artifacts_expire_at: ${job.artifacts_expire_at}`);
   if (job.artifacts_expire_at) {
     try {
-      execSync("unzip", ["-h"]);
+      execFileSync("unzip", ["-h"]);
     } catch (error) {
       red("unzip not found, skip artifacts dl/extract.");
       return;
@@ -126,7 +126,7 @@ async function extractArtifacts(job) {
 
 async function main() {
   const current_tree = getTree("HEAD");
-  console.log("current_tree:\n${current_tree}\n------------");
+  console.log(`current_tree:\n${current_tree}\n------------`);
   const projectJobs = await fetchJson(
     `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs?scope=success&per_page=1000&page=&private_token=${process.env.API_READ_TOKEN}`
   );
