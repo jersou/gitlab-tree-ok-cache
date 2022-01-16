@@ -89,14 +89,13 @@ function fetchJson(url) {
 }
 
 function downloadFile(path, url) {
-  console.log({ url });
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(path);
     let client = url.match(/^https/) ? https : http;
     client
       .get(url, (res) => {
         if (res.statusCode !== 200) {
-          reject(`Status Code: ${resp.statusCode} !`);
+          reject(`Status Code: ${res.statusCode} !`);
         }
         res.pipe(file);
         res.on("end", () => resolve());
