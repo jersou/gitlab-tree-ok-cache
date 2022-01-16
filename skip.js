@@ -107,25 +107,27 @@ function downloadFile(path, url) {
   });
 }
 
-async function extractArtifact(job) {
+async function extractArtifacts(job) {
   if (job.artifacts_expire_at) {
     try {
       execSync("unzip", ["-h"]);
     } catch (error) {
-      red("unzip not found, skip artifact dl/extract.");
+      red("unzip not found, skip artifacts dl/extract.");
       return;
     }
     console.log(`artifacts_expire_at: ${job.artifacts_expire_at}`);
     try {
-      const artifactPath = "artifact.zip";
+      const artifactsPath = "artifacts.zip";
+      console.log(`download artifacts.zip`);
       await downloadFile(
-        artifactPath,
+        artifactsPath,
         `${process.env.CI_API_V4_URL}/projects/${process.env.CI_PROJECT_ID}/jobs/${job.id}/artifacts?job_token=${process.env.CI_JOB_TOKEN}`
       );
-      execSync("unzip", [artifactPath]);
-      fs.unlinkSync(artifactPath);
+      console.log(`unzip artifacts.zip`);
+      execSync("unzip", [artifactsPath]);
+      fs.unlinkSync(artifactsPath);
     } catch (e) {
-      red("artifact not found, expired ? → Don't skip");
+      red("artifacts not found, expired ? → Don't skip");
       fs.writeFileSync(ci_skip_path, "false");
       process.exit(5);
     }
@@ -143,7 +145,7 @@ async function main() {
   for (const job of okJobCommits) {
     const tree = await getTree(job.commit.id);
     if (current_tree_sha === tree) {
-      await extractArtifact(job);
+      await extractArtifacts(job);
       fs.writeFileSync(ci_skip_path, "true");
       green(`✅ ${current_tree_sha} tree found in job ${job.web_url}`);
       process.exit(0);
